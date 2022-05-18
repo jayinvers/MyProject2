@@ -11,87 +11,87 @@ using MyProject2.Models;
 namespace MyProject2.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class StudentsController : Controller
+    public class BlogsController : Controller
     {
         private readonly MyProject2Context _context;
 
-        public StudentsController(MyProject2Context context)
+        public BlogsController(MyProject2Context context)
         {
             _context = context;
         }
 
-        // GET: Admin/Students
+        // GET: Admin/Blogs
         public async Task<IActionResult> Index()
         {
-              return _context.Student != null ? 
-                          View(await _context.Student.ToListAsync()) :
-                          Problem("Entity set 'MyProject2Context.Student'  is null.");
+              return _context.Blogs != null ? 
+                          View(await _context.Blogs.ToListAsync()) :
+                          Problem("Entity set 'MyProject2Context.Blogs'  is null.");
         }
 
-        // GET: Admin/Students/Details/5
+        // GET: Admin/Blogs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Student == null)
+            if (id == null || _context.Blogs == null)
             {
                 return NotFound();
             }
 
-            var student = await _context.Student
-                .FirstOrDefaultAsync(m => m.StudentId == id);
-            if (student == null)
+            var blog = await _context.Blogs.Include(blog => blog.Posts)
+                .FirstOrDefaultAsync(m => m.BlogId == id);
+            if (blog == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            return View(blog);
         }
 
-        // GET: Admin/Students/Create
+        // GET: Admin/Blogs/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/Students/Create
+        // POST: Admin/Blogs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentId,Name")] Student student)
+        public async Task<IActionResult> Create([Bind("BlogId,Url")] Blog blog)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(student);
+                _context.Add(blog);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return View(blog);
         }
 
-        // GET: Admin/Students/Edit/5
+        // GET: Admin/Blogs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Student == null)
+            if (id == null || _context.Blogs == null)
             {
                 return NotFound();
             }
 
-            var student = await _context.Student.FindAsync(id);
-            if (student == null)
+            var blog = await _context.Blogs.FindAsync(id);
+            if (blog == null)
             {
                 return NotFound();
             }
-            return View(student);
+            return View(blog);
         }
 
-        // POST: Admin/Students/Edit/5
+        // POST: Admin/Blogs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StudentId,Name")] Student student)
+        public async Task<IActionResult> Edit(int id, [Bind("BlogId,Url")] Blog blog)
         {
-            if (id != student.StudentId)
+            if (id != blog.BlogId)
             {
                 return NotFound();
             }
@@ -100,12 +100,12 @@ namespace MyProject2.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(student);
+                    _context.Update(blog);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(student.StudentId))
+                    if (!BlogExists(blog.BlogId))
                     {
                         return NotFound();
                     }
@@ -116,49 +116,49 @@ namespace MyProject2.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return View(blog);
         }
 
-        // GET: Admin/Students/Delete/5
+        // GET: Admin/Blogs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Student == null)
+            if (id == null || _context.Blogs == null)
             {
                 return NotFound();
             }
 
-            var student = await _context.Student
-                .FirstOrDefaultAsync(m => m.StudentId == id);
-            if (student == null)
+            var blog = await _context.Blogs
+                .FirstOrDefaultAsync(m => m.BlogId == id);
+            if (blog == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            return View(blog);
         }
 
-        // POST: Admin/Students/Delete/5
+        // POST: Admin/Blogs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Student == null)
+            if (_context.Blogs == null)
             {
-                return Problem("Entity set 'MyProject2Context.Student'  is null.");
+                return Problem("Entity set 'MyProject2Context.Blogs'  is null.");
             }
-            var student = await _context.Student.FindAsync(id);
-            if (student != null)
+            var blog = await _context.Blogs.FindAsync(id);
+            if (blog != null)
             {
-                _context.Student.Remove(student);
+                _context.Blogs.Remove(blog);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StudentExists(int id)
+        private bool BlogExists(int id)
         {
-          return (_context.Student?.Any(e => e.StudentId == id)).GetValueOrDefault();
+          return (_context.Blogs?.Any(e => e.BlogId == id)).GetValueOrDefault();
         }
     }
 }
